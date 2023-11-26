@@ -6,7 +6,7 @@ export default async function Home() {
 
   return (
     <main>
-      <h1 className="text-center font-bold text-3xl mb-6">Subscriber</h1>
+      <h1 className="text-center font-bold text-3xl mb-6">Subscribers</h1>
       <SubTable subs={subs} />
     </main>
   );

@@ -56,7 +56,10 @@ const SubTable = ({ subs }: Props) => {
         <UpdateModal
           subscriber={subscribers}
           selectedId={selectedId}
-          onUpdate={() => handleUpdate(selectedId)}
+          onUpdate={() => {
+            handleUpdate(selectedId);
+            setUpdateModalVisible(false);
+          }}
           onClose={() => setUpdateModalVisible(false)}
         />
       ) : null}
