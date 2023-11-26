@@ -2,15 +2,20 @@
 
 import React, { useState } from "react";
 import subService, { Subscriber } from "../services/sub-service";
+import { PencilSquareIcon } from "@heroicons/react/20/solid";
+import UpdateModal from "./UpdateModal";
+import { useUpdate } from "../context/UpdateSubContext";
 
 interface Props {
-  // onDelete: (id: number) => void;
   subs: Subscriber[];
 }
 
 const SubTable = ({ subs }: Props) => {
+  const { formData } = useUpdate();
   const [subscribers, setSubscribers] = useState<Subscriber[]>(subs);
   const [err, setErr] = useState("");
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState<number>(0);
 
   const handleDelete = async (id: number): Promise<void> => {
     const originalSubs = [...subscribers];
@@ -23,8 +28,38 @@ const SubTable = ({ subs }: Props) => {
     }
   };
 
+  const handleUpdate = async (id: number) => {
+    const originalSubs = [...subscribers];
+    // Call the updateSub function here
+    try {
+      const updatedSubscribers = subscribers.map((s) =>
+        s.id === id ? { ...formData, id: s.id } : s
+      );
+
+      if (selectedId) {
+        await subService.updateSub(updatedSubscribers[selectedId - 1]);
+      }
+      // Update the state only if the updateSub was successful
+      setSubscribers(updatedSubscribers);
+    } catch (err) {
+      // Restore the original state if an error occurs
+      setSubscribers(originalSubs);
+      setErr((err as Error).message);
+      console.log(err);
+    }
+  };
+
+  console.log("CHOSEN ID", selectedId);
   return (
     <>
+      {updateModalVisible ? (
+        <UpdateModal
+          subscriber={subscribers}
+          selectedId={selectedId}
+          onUpdate={() => handleUpdate(selectedId)}
+          onClose={() => setUpdateModalVisible(false)}
+        />
+      ) : null}
       {err && <p className="text-center text-red-500 mb-3">{err}</p>}
       <table className="table max-w-6xl mx-auto">
         <thead>
@@ -49,10 +84,20 @@ const SubTable = ({ subs }: Props) => {
               <td>
                 <button
                   onClick={() => handleDelete(sub.id)}
-                  className="btn btn-outline btn-secondary btn-sm"
+                  className="btn btn-outline btn-primary btn-sm"
                 >
                   Delete
                 </button>
+              </td>
+              <td>
+                edit
+                <PencilSquareIcon
+                  onClick={() => {
+                    setUpdateModalVisible(true);
+                    setSelectedId(sub.id);
+                  }}
+                  className="h-6 w-6"
+                />
               </td>
             </tr>
           ))}
