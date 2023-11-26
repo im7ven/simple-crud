@@ -5,6 +5,7 @@ import subService, { Subscriber } from "../services/sub-service";
 import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import UpdateModal from "./UpdateModal";
 import { useUpdate } from "../context/UpdateSubContext";
+import CreateModal from "./CreateModal";
 
 interface Props {
   subs: Subscriber[];
@@ -15,6 +16,7 @@ const SubTable = ({ subs }: Props) => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>(subs);
   const [err, setErr] = useState("");
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<number>(0);
 
   const handleDelete = async (id: number): Promise<void> => {
@@ -63,6 +65,9 @@ const SubTable = ({ subs }: Props) => {
           onClose={() => setUpdateModalVisible(false)}
         />
       ) : null}
+      {createModalVisible ? (
+        <CreateModal onClose={() => setCreateModalVisible(false)} />
+      ) : null}
       {err && <p className="text-center text-red-500 mb-3">{err}</p>}
       <table className="table max-w-6xl mx-auto">
         <thead>
@@ -93,7 +98,6 @@ const SubTable = ({ subs }: Props) => {
                 </button>
               </td>
               <td>
-                edit
                 <PencilSquareIcon
                   onClick={() => {
                     setUpdateModalVisible(true);
@@ -106,6 +110,12 @@ const SubTable = ({ subs }: Props) => {
           ))}
         </tbody>
       </table>
+      <button
+        onClick={() => setCreateModalVisible(true)}
+        className="btn btn-primary btn-wide block mx-auto my-3"
+      >
+        Create Subscriber
+      </button>
     </>
   );
 };
