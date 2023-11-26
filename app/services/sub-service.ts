@@ -46,6 +46,23 @@ class SubService {
       throw new Error((err as Error).message);
     }
   }
+
+  async createSub(newSubscriber: Subscriber): Promise<void> {
+    try {
+      const res = await fetch(baseUrl + "/users", {
+        method: "POST",
+        body: JSON.stringify(newSubscriber),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          `Failed to create new subscriber. Status: ${res.status}`
+        );
+      }
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
+  }
 }
 
 export default new SubService();
