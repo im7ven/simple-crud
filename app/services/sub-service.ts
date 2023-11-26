@@ -19,7 +19,7 @@ class SubService {
 
   async deleteSub(id: number): Promise<void> {
     try {
-      const res = await fetch(baseUrl + `/usexrs/${id}`, {
+      const res = await fetch(baseUrl + `/users/${id}`, {
         method: "DELETE",
       });
 
@@ -28,6 +28,22 @@ class SubService {
       }
     } catch (err) {
       throw new Error(`${(err as Error).message}`);
+    }
+  }
+
+  async updateSub(subscriber: Subscriber): Promise<void> {
+    try {
+      const res = await fetch(baseUrl + "/users/" + subscriber.id, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(subscriber),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to update subscriber. Status: ${res.status}`);
+      }
+    } catch (err) {
+      throw new Error((err as Error).message);
     }
   }
 }
