@@ -19,7 +19,7 @@ class SubService {
 
   async deleteSub(id: number): Promise<void> {
     try {
-      const res = await fetch(baseUrl + `/users/${id}`, {
+      const res = await fetch(baseUrl + `/ussers/${id}`, {
         method: "DELETE",
       });
 
@@ -33,7 +33,7 @@ class SubService {
 
   async updateSub(subscriber: Subscriber): Promise<void> {
     try {
-      const res = await fetch(baseUrl + "/users/" + subscriber.id, {
+      const res = await fetch(baseUrl + "/usxers/" + subscriber.id, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(subscriber),
@@ -49,7 +49,7 @@ class SubService {
 
   async createSub(newSubscriber: Subscriber): Promise<void> {
     try {
-      const res = await fetch(baseUrl + "/users", {
+      const res = await fetch(baseUrl + "/usesrs", {
         method: "POST",
         body: JSON.stringify(newSubscriber),
       });

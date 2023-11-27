@@ -6,6 +6,7 @@ import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import UpdateModal from "./UpdateModal";
 import { useUpdate } from "../context/UpdateSubContext";
 import CreateModal from "./CreateModal";
+import { useCreate } from "../context/CreateSubContext";
 
 interface Props {
   subs: Subscriber[];
@@ -13,6 +14,7 @@ interface Props {
 
 const SubTable = ({ subs }: Props) => {
   const { formData } = useUpdate();
+  const { createFormData } = useCreate();
   const [subscribers, setSubscribers] = useState<Subscriber[]>(subs);
   const [err, setErr] = useState("");
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
@@ -51,7 +53,17 @@ const SubTable = ({ subs }: Props) => {
     }
   };
 
-  console.log("CHOSEN ID", selectedId);
+  const handleCreate = async (newSub: Subscriber) => {
+    const orginalState = [...subscribers];
+    setSubscribers([...subscribers, { ...newSub }]);
+    try {
+      await subService.createSub(newSub);
+    } catch (err) {
+      setSubscribers(orginalState);
+      setErr((err as Error).message);
+    }
+  };
+
   return (
     <>
       {updateModalVisible ? (
@@ -66,7 +78,14 @@ const SubTable = ({ subs }: Props) => {
         />
       ) : null}
       {createModalVisible ? (
-        <CreateModal onClose={() => setCreateModalVisible(false)} />
+        <CreateModal
+          onCreate={() => {
+            handleCreate(createFormData);
+            setCreateModalVisible(false);
+          }}
+          subscribers={subscribers}
+          onClose={() => setCreateModalVisible(false)}
+        />
       ) : null}
       {err && <p className="text-center text-red-500 mb-3">{err}</p>}
       <table className="table max-w-6xl mx-auto">

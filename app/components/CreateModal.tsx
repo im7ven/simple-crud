@@ -1,15 +1,19 @@
 import { XCircleIcon } from "@heroicons/react/20/solid";
-import React, { useState } from "react";
-import { useUpdate } from "../context/UpdateSubContext";
+import React, { useEffect, useState } from "react";
+import { useCreate } from "../context/CreateSubContext";
+import { Subscriber } from "../services/sub-service";
 
 interface Props {
   onClose: () => void;
+  onCreate: () => void;
+  subscribers: Subscriber[];
 }
 
-const CreateModal = ({ onClose }: Props) => {
-  const { handleSubmit, formData } = useUpdate();
+const CreateModal = ({ onClose, subscribers, onCreate }: Props) => {
+  const { handleSubmit } = useCreate();
 
   const [form, setForm] = useState({
+    id: subscribers.length + 1,
     name: "",
     username: "",
     email: "",
@@ -17,6 +21,10 @@ const CreateModal = ({ onClose }: Props) => {
     address: { city: "" },
     company: { name: "" },
   });
+
+  useEffect(() => {
+    handleSubmit(form);
+  }, [form]);
 
   return (
     <section className="absolute top-[50%] right-[50%] w-[40rem] translate-x-[50%] translate-y-[-50%] bg-slate-900 z-10 py-6 px-3 rounded-lg">
@@ -145,7 +153,7 @@ const CreateModal = ({ onClose }: Props) => {
         </div>
       </form>
       <button
-        onClick={() => {}}
+        onClick={() => onCreate()}
         className="btn btn-primary block mx-auto mt-2 w-[10rem]"
       >
         Update
